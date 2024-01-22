@@ -1,0 +1,43 @@
+version: "3.8"
+
+networks:
+  xyz-network:
+    name: xyz-network
+    driver: bridge
+
+volumes:
+  xyz-volume:
+    name: xyz-volume
+
+services:
+  xyz-mysql:
+    image: mysql:latest
+    container_name: xyz-mysql
+    restart: on-failure
+    ports:
+      - target: 3306
+        published: 3306
+        protocol: tcp
+        mode: host
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - xyz-network
+
+  xyz-jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: xyz-jaeger
+    networks:
+      - xyz-network
+    restart: on-failure
+    ports:
+      - target: 16686
+        published: 16686
+        protocol: tcp
+        mode: host
+      - target: 6831
+        published: 6831
+        protocol: udp
+        mode: host
+    depends_on:
+      - xyz-mysql

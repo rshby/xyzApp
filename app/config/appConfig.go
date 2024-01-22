@@ -8,6 +8,7 @@ import (
 type AppConfig struct {
 	App      *App      `json:"app,omitempty"`
 	Database *Database `json:"database,omitempty"`
+	Jaeger   *Jaeger   `json:"jaeger,omitempty"`
 }
 
 type App struct {
@@ -21,6 +22,11 @@ type Database struct {
 	Host     string `json:"host,omitempty"`
 	Port     int    `json:"port,omitempty"`
 	Name     string `json:"name,omitempty"`
+}
+
+type Jaeger struct {
+	Host string `json:"host,omitempty"`
+	Port int    `json:"port,omitempty"`
 }
 
 func LoadConfig() *AppConfig {
@@ -44,6 +50,10 @@ func LoadConfig() *AppConfig {
 			Host:     cfg.GetString("database.host"),
 			Port:     cfg.GetInt("database.port"),
 			Name:     cfg.GetString("database.name"),
+		},
+		Jaeger: &Jaeger{
+			Host: cfg.GetString("jaeger.host"),
+			Port: cfg.GetInt("jaeger.port"),
 		},
 	}
 
