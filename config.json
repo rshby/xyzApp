@@ -1,0 +1,17 @@
+{
+  "app" : {
+    "name" : "xyz app",
+    "author" : "Reo Sahobby"
+  },
+  "database" : {
+    "user" : "root",
+    "password" : "root",
+    "host" : "localhost",
+    "port" : 3306,
+    "name" : "xyz_app"
+  },
+  "jaeger" : {
+    "host" : "localhost",
+    "port" : 15672
+  }
+}
