@@ -6,6 +6,7 @@ import (
 	"xyzApp/app/config"
 	"xyzApp/app/logger"
 	"xyzApp/app/tracing"
+	"xyzApp/database"
 )
 
 func main() {
@@ -23,4 +24,6 @@ func main() {
 	opentracing.SetGlobalTracer(tracer)
 
 	// connect db
+	db := database.ConnectDB(cfg, log)
+	fmt.Println(db)
 }
