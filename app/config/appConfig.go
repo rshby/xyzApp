@@ -9,6 +9,7 @@ type AppConfig struct {
 	App      *App      `json:"app,omitempty"`
 	Database *Database `json:"database,omitempty"`
 	Jaeger   *Jaeger   `json:"jaeger,omitempty"`
+	Jwt      *Jwt      `json:"jwt,omitempty"`
 }
 
 type App struct {
@@ -28,6 +29,10 @@ type Database struct {
 type Jaeger struct {
 	Host string `json:"host,omitempty"`
 	Port int    `json:"port,omitempty"`
+}
+
+type Jwt struct {
+	SecretKey string `json:"secret_key,omitempty"`
 }
 
 func LoadConfig() *AppConfig {
@@ -56,6 +61,9 @@ func LoadConfig() *AppConfig {
 		Jaeger: &Jaeger{
 			Host: cfg.GetString("jaeger.host"),
 			Port: cfg.GetInt("jaeger.port"),
+		},
+		Jwt: &Jwt{
+			SecretKey: cfg.GetString("jwt.secret_key"),
 		},
 	}
 

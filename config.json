@@ -14,5 +14,8 @@
   "jaeger" : {
     "host" : "localhost",
     "port" : 6831
+  },
+  "jwt" : {
+    "secret_key" : "sangatRahasia123"
   }
 }
