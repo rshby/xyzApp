@@ -46,7 +46,7 @@ func (k *KonsumerHandler) Register(ctx *fiber.Ctx) error {
 		if validationError, ok := err.(validator.ValidationErrors); ok {
 			var errorMessages []string
 			for _, fieldError := range validationError {
-				message := fmt.Sprintf("error on field : [%v], with tag : [%v]", fieldError.Field(), fieldError.Tag())
+				message := fmt.Sprintf("error on field : [%v], with error : [%v]", fieldError.Field(), helper.GetErrorByTag(fieldError.Tag()))
 				errorMessages = append(errorMessages, message)
 			}
 

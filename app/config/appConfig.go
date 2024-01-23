@@ -14,6 +14,7 @@ type AppConfig struct {
 type App struct {
 	Name   string `json:"name,omitempty"`
 	Author string `json:"author,omitempty"`
+	Port   int    `json:"port,omitempty"`
 }
 
 type Database struct {
@@ -43,6 +44,7 @@ func LoadConfig() *AppConfig {
 		App: &App{
 			Name:   cfg.GetString("app.name"),
 			Author: cfg.GetString("app.author"),
+			Port:   cfg.GetInt("app.port"),
 		},
 		Database: &Database{
 			User:     cfg.GetString("database.user"),

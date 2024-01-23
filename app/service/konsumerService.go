@@ -32,7 +32,7 @@ func (k *KonsumerService) Register(ctx context.Context, request *dto.RegisterKon
 	defer span.Finish()
 
 	// validate
-	err := k.Validate.StructCtx(ctxTracing, &request)
+	err := k.Validate.StructCtx(ctxTracing, *request)
 	if err != nil {
 		return nil, err
 	}

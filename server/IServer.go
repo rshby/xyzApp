@@ -1,5 +1,5 @@
 package server
 
-type Server interface {
-	RunServer()
+type IServer interface {
+	RunServer() error
 }
