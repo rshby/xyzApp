@@ -7,6 +7,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"net/http"
 	"strings"
+	"xyzApp/app/customError"
 	"xyzApp/app/helper"
 	"xyzApp/app/model/dto"
 	"xyzApp/app/service"
@@ -17,6 +18,11 @@ type TenorHandler struct {
 }
 
 // function provider
+func NewTenorHandler(tenorService service.ITenorService) *TenorHandler {
+	return &TenorHandler{TenorService: tenorService}
+}
+
+// handler limit
 func (t *TenorHandler) InsertLimit(ctx *fiber.Ctx) error {
 	span, ctxTracing := opentracing.StartSpanFromContext(ctx.Context(), "TenorHandler InsertLimit")
 	defer span.Finish()
@@ -53,6 +59,42 @@ func (t *TenorHandler) InsertLimit(ctx *fiber.Ctx) error {
 				Message:    strings.Join(errorMessages, ", "),
 			})
 		}
+
+		switch err.(type) {
+		case *customError.NotFoundError:
+			statusCode := http.StatusNotFound
+			ctx.Status(statusCode)
+			return ctx.JSON(&dto.ApiResponse{
+				StatusCode: statusCode,
+				Status:     helper.CodeToStatus(statusCode),
+				Message:    err.Error(),
+			})
+		case *customError.BadRequestError:
+			statusCode := http.StatusBadRequest
+			ctx.Status(statusCode)
+			return ctx.JSON(&dto.ApiResponse{
+				StatusCode: statusCode,
+				Status:     helper.CodeToStatus(statusCode),
+				Message:    err.Error(),
+			})
+		default:
+			statusCode := http.StatusInternalServerError
+			ctx.Status(statusCode)
+			return ctx.JSON(&dto.ApiResponse{
+				StatusCode: statusCode,
+				Status:     helper.CodeToStatus(statusCode),
+				Message:    err.Error(),
+			})
+		}
 	}
 
+	// success
+	statusCode := http.StatusOK
+	ctx.Status(statusCode)
+	return ctx.JSON(&dto.ApiResponse{
+		StatusCode: statusCode,
+		Status:     helper.CodeToStatus(statusCode),
+		Message:    "success insert tenor",
+		Data:       tenor,
+	})
 }

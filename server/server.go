@@ -21,21 +21,25 @@ type ServerApp struct {
 func NewServerApp(cfg *config.AppConfig, validate *validator.Validate, db *sql.DB) IServer {
 	// register repository
 	konsumerRepo := repository.NewKonsumerRepository(db)
+	tenorRepo := repository.NewTenorRepository(db)
 
 	// register service
 	konsumerService := service.NewKonsumerService(validate, konsumerRepo)
+	tenorService := service.NewTenorService(validate, tenorRepo, konsumerRepo)
 
 	// register handler
 	konsumerHandler := handler.NewKonsumerHandler(konsumerService)
+	tenorHandler := handler.NewTenorHandler(tenorService)
 
 	app := fiber.New(fiber.Config{
-		Prefork: true,
+		Prefork: false,
 	})
 
 	v1 := app.Group("/v1")
 	v1.Use(logger.New())
 
 	routes.SetKonsumerRoutes(v1, konsumerHandler)
+	routes.SetTenorRoutes(v1, tenorHandler)
 	return &ServerApp{
 		Router: app,
 		Config: cfg,

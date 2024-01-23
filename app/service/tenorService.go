@@ -12,15 +12,18 @@ import (
 )
 
 type TenorService struct {
-	Validate  *validator.Validate
-	TenorRepo repository.ITenorRepository
+	Validate     *validator.Validate
+	TenorRepo    repository.ITenorRepository
+	KonsumerRepo repository.IKonsumerRepository
 }
 
 // function provider
-func NewTenorService(validate *validator.Validate, tenorRepo repository.ITenorRepository) ITenorService {
+func NewTenorService(validate *validator.Validate, tenorRepo repository.ITenorRepository,
+	konsumerRepo repository.IKonsumerRepository) ITenorService {
 	return &TenorService{
-		Validate:  validate,
-		TenorRepo: tenorRepo,
+		Validate:     validate,
+		TenorRepo:    tenorRepo,
+		KonsumerRepo: konsumerRepo,
 	}
 }
 
@@ -33,6 +36,12 @@ func (t *TenorService) InsertLimit(ctx context.Context, request *dto.InsertLimit
 	if err := t.Validate.StructCtx(ctxTracing, *request); err != nil {
 		// send error validation
 		return nil, err
+	}
+
+	// cek apakah nik ada di database atau tidak
+	_, err := t.KonsumerRepo.GetByNik(ctxTracing, request.Nik)
+	if err != nil {
+		return nil, customError.NewNotFoundError("record konsumer tidak ditemukan")
 	}
 
 	if request.Bulan > 12 {

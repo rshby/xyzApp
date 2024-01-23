@@ -44,3 +44,34 @@ func (t *TenorRepository) Insert(ctx context.Context, input *entity.Tenor) (*ent
 	// success insert
 	return input, nil
 }
+
+// method to get data tenor by nik and date_transaction
+func (t *TenorRepository) GetByNikAndDate(ctx context.Context, nik string, dateTransaction time.Time) (*entity.Tenor, error) {
+	span, ctxTracing := opentracing.StartSpanFromContext(ctx, "TenorRepository GetByNikAndDate")
+	defer span.Finish()
+
+	// prepare query
+	statement, err := t.db.PrepareContext(ctxTracing, "SELECT t.id, t.nik, t.bulan, t.start_date, t.end_date, t.tenor, t.created_at, t.updated_at FROM tenor t WHERE t.nik=? AND ? BETWEEN t.start_date AND t.end_date")
+	defer statement.Close()
+	if err != nil {
+		return nil, customError.NewInternalSeverError(err.Error())
+	}
+
+	// query
+	row := statement.QueryRowContext(ctxTracing, nik, dateTransaction)
+	if row.Err() != nil {
+		return nil, customError.NewInternalSeverError(row.Err().Error())
+	}
+
+	var tenor entity.Tenor
+	if err := row.Scan(&tenor.Id, &tenor.Nik, &tenor.Bulan, &tenor.StartDate, &tenor.EndDate, &tenor.CreatedAt, &tenor.UpdatedAt); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, customError.NewNotFoundError("record tenor not found")
+		}
+
+		return nil, customError.NewInternalSeverError(err.Error())
+	}
+
+	// success get data
+	return &tenor, nil
+}
