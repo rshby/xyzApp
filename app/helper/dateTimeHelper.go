@@ -7,7 +7,7 @@ import (
 // convert from string to time.Time
 func StringToDateTime(date string) (time.Time, error) {
 	// format yyyy-MM-dd HH:mm:ss
-	dateTime, err := time.Parse("2006-04-02 15:04:05", date)
+	dateTime, err := time.Parse("2006-01-02 15:04:05", date)
 	if err != nil {
 		return time.Time{}, err
 	}
@@ -17,7 +17,7 @@ func StringToDateTime(date string) (time.Time, error) {
 
 // convert from time.Time to string
 func DateTimeToString(date time.Time) string {
-	return date.Format("2006-04-02 15-04:05")
+	return date.Format("2006-01-02 15-04:05")
 }
 
 // convert bulan (angka) ke text

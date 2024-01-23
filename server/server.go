@@ -22,14 +22,17 @@ func NewServerApp(cfg *config.AppConfig, validate *validator.Validate, db *sql.D
 	// register repository
 	konsumerRepo := repository.NewKonsumerRepository(db)
 	tenorRepo := repository.NewTenorRepository(db)
+	transactionRepo := repository.NewTransactionRepository(db)
 
 	// register service
 	konsumerService := service.NewKonsumerService(validate, konsumerRepo)
 	tenorService := service.NewTenorService(validate, tenorRepo, konsumerRepo)
+	transactionService := service.NewTransactionService(validate, konsumerRepo, tenorRepo, transactionRepo)
 
 	// register handler
 	konsumerHandler := handler.NewKonsumerHandler(konsumerService)
 	tenorHandler := handler.NewTenorHandler(tenorService)
+	transactionHandler := handler.NewTrasactionHandler(transactionService)
 
 	app := fiber.New(fiber.Config{
 		Prefork: false,
@@ -40,6 +43,8 @@ func NewServerApp(cfg *config.AppConfig, validate *validator.Validate, db *sql.D
 
 	routes.SetKonsumerRoutes(v1, konsumerHandler)
 	routes.SetTenorRoutes(v1, tenorHandler)
+	routes.SetTransactionRoutes(v1, transactionHandler)
+
 	return &ServerApp{
 		Router: app,
 		Config: cfg,

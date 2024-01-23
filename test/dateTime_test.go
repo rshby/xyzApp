@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 )
@@ -47,4 +48,17 @@ func TestGetFirstAndLastDate(t *testing.T) {
 
 	fmt.Println("fist :", first)
 	fmt.Println("last :", last)
+}
+
+func TestReffNumber(t *testing.T) {
+	refNumber := func(date, nik string) string {
+		nik = nik[6:]
+		dateTime := strings.Split(date, " ")
+		dateTime[0] = strings.ReplaceAll(dateTime[0], "-", "")
+		dateTime[1] = strings.ReplaceAll(dateTime[1], ":", "")
+
+		return dateTime[0] + dateTime[1] + nik
+	}
+
+	fmt.Println(refNumber("2024-01-01 10:25:30", "3310250502990002"))
 }
