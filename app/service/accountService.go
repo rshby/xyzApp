@@ -67,10 +67,7 @@ func (a *AccountService) Register(ctx context.Context, request *dto.RegisterAcco
 	}(ctxTracing, wg, request.Email, errAccountChan)
 
 	// hash password
-	hashedPassword, err := helper.HashPassword(request.Password)
-	if err != nil {
-		return customError.NewInternalSeverError("failed to hash password")
-	}
+	hashedPassword, _ := helper.HashPassword(request.Password)
 
 	// wait all task
 	wg.Wait()
@@ -92,7 +89,7 @@ func (a *AccountService) Register(ctx context.Context, request *dto.RegisterAcco
 	}
 
 	// insert
-	_, err = a.AccountRepo.Insert(ctxTracing, &input)
+	_, err := a.AccountRepo.Insert(ctxTracing, &input)
 	if err != nil {
 		return err
 	}
@@ -106,6 +103,11 @@ func (a *AccountService) Login(ctx context.Context, request *dto.LoginRequest) (
 	span, ctxTracing := opentracing.StartSpanFromContext(ctx, "AccountService Login")
 	defer span.Finish()
 
+	// validasi
+	if err := a.Validate.StructCtx(ctxTracing, *request); err != nil {
+		return nil, err
+	}
+
 	// cek apakah email ada di database
 	account, err := a.AccountRepo.GetByEmail(ctxTracing, request.Email)
 	if err != nil {
@@ -113,14 +115,9 @@ func (a *AccountService) Login(ctx context.Context, request *dto.LoginRequest) (
 	}
 
 	// cek password
-	isPasswordOk, err := helper.CheckPasword(account.Password, request.Password)
+	_, err = helper.CheckPasword(account.Password, request.Password)
 	if err != nil {
 		return nil, customError.NewInternalSeverError(err.Error())
-	}
-
-	// jika password tidak sama
-	if !isPasswordOk {
-		return nil, customError.NewBadRequestError("password not match")
 	}
 
 	// get token
