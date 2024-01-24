@@ -2,7 +2,7 @@
   "app" : {
     "name" : "xyz app",
     "author" : "Reo Sahobby",
-    "port" : 5000
+    "port" : 5005
   },
   "database" : {
     "user" : "root",

@@ -2,9 +2,13 @@ package test
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 	"time"
+	"xyzApp/app/config"
+	"xyzApp/app/helper"
+	mck "xyzApp/test/mock"
 )
 
 func TestStringToDateTime(t *testing.T) {
@@ -61,4 +65,21 @@ func TestReffNumber(t *testing.T) {
 	}
 
 	fmt.Println(refNumber("2024-01-01 10:25:30", "3310250502990002"))
+}
+
+func TestJWT(t *testing.T) {
+	cfgMock := mck.NewConfigMock()
+
+	// mock
+	cfgMock.Mock.On("GetConfig").Return(&config.AppConfig{
+		App:      nil,
+		Database: nil,
+		Jaeger:   nil,
+		Jwt:      &config.Jwt{SecretKey: "sangatRahasia123"},
+	})
+
+	// test
+	token, err := helper.GenerateToken(cfgMock, "reoshby@gmail.com")
+	assert.Nil(t, err)
+	assert.NotNil(t, token)
 }

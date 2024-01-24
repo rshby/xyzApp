@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/opentracing/opentracing-go"
 	"xyzApp/app/config"
@@ -14,21 +13,20 @@ import (
 func main() {
 	// set config App
 	cfg := config.LoadConfig()
-	fmt.Println(cfg)
 
 	// set logger console
 	log := logger.NewLoggerConsole()
 	log.Info("start app")
 
 	// set tracing
-	tracer, closer := tracing.ConnectJaeger(cfg, log, "xyzApp")
+	tracer, closer := tracing.ConnectJaeger(cfg.GetConfig(), log, "xyzApp")
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
 	validate := validator.New()
 
 	// connect db
-	db := database.ConnectDB(cfg, log)
+	db := database.ConnectDB(cfg.GetConfig(), log)
 
 	// run server
 	server := server.NewServerApp(cfg, validate, db)

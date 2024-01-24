@@ -5,6 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/opentracing/opentracing-go"
 	"sync"
+	"xyzApp/app/config"
 	"xyzApp/app/customError"
 	"xyzApp/app/helper"
 	"xyzApp/app/model/dto"
@@ -13,15 +14,17 @@ import (
 )
 
 type AccountService struct {
+	Config       config.IConfig
 	Validate     *validator.Validate
 	AccountRepo  repository.IAccountRepository
 	KonsumerRepo repository.IKonsumerRepository
 }
 
 // function provider
-func NewAccountService(validate *validator.Validate, accRepo repository.IAccountRepository,
+func NewAccountService(cfg config.IConfig, validate *validator.Validate, accRepo repository.IAccountRepository,
 	konsumerRepo repository.IKonsumerRepository) IAccountService {
 	return &AccountService{
+		Config:       cfg,
 		Validate:     validate,
 		AccountRepo:  accRepo,
 		KonsumerRepo: konsumerRepo,
@@ -100,6 +103,35 @@ func (a *AccountService) Register(ctx context.Context, request *dto.RegisterAcco
 
 // method login
 func (a *AccountService) Login(ctx context.Context, request *dto.LoginRequest) (*dto.LoginResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	span, ctxTracing := opentracing.StartSpanFromContext(ctx, "AccountService Login")
+	defer span.Finish()
+
+	// cek apakah email ada di database
+	account, err := a.AccountRepo.GetByEmail(ctxTracing, request.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	// cek password
+	isPasswordOk, err := helper.CheckPasword(account.Password, request.Password)
+	if err != nil {
+		return nil, customError.NewInternalSeverError(err.Error())
+	}
+
+	// jika password tidak sama
+	if !isPasswordOk {
+		return nil, customError.NewBadRequestError("password not match")
+	}
+
+	// get token
+	token, err := helper.GenerateToken(a.Config, request.Email)
+	if err != nil {
+		return nil, customError.NewInternalSeverError(err.Error())
+	}
+
+	// success login
+	response := dto.LoginResponse{
+		Token: token,
+	}
+	return &response, nil
 }
