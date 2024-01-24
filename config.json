@@ -7,18 +7,18 @@
   "database" : {
     "user" : "root",
     "password" : "root",
-    "host" : "localhost",
+    "host" : "xyz-mysql",
     "port" : 3306,
     "name" : "xyz_app"
   },
   "jaeger" : {
-    "host" : "localhost",
+    "host" : "xyz-jaeger",
     "port" : 6831
   },
   "jwt" : {
     "secret_key" : "sangatRahasia123"
   },
   "logging" : {
-    "path" : "./log/log_xyzApp.log"
+    "path" : "/app/log/log_xyzApp.log"
   }
 }

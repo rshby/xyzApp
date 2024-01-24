@@ -2,26 +2,40 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
+	"time"
 	"xyzApp/app/config"
+	"xyzApp/app/logger"
 )
 
 func LoggerMiddleware(cfg config.IConfig) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		// Capture request body
-		var bodyMap map[string]any
-		json.Unmarshal(ctx.Body(), &bodyMap)
-		fmt.Println(bodyMap)
+		logfile := logger.NewLoggerFile(cfg)
+		startTime := time.Now()
+
+		// capture request body
+		var requestMap map[string]any
+		json.Unmarshal(ctx.Body(), &requestMap)
+
 		ctx.Next()
 
+		// capture response body
 		var responseMap map[string]any
 		json.Unmarshal(ctx.Response().Body(), &responseMap)
-		fmt.Println(responseMap)
 
-		fmt.Println(string(ctx.Request().URI().Path()))    // endpoint
-		fmt.Println(ctx.Response().StatusCode())           // statuscode
-		fmt.Println(string(ctx.Request().Header.Method())) // method
+		// encode request_body and response_body
+		requestJson, _ := json.Marshal(&requestMap)
+		responseJson, _ := json.Marshal(&responseMap)
+
+		logfile.WithFields(logrus.Fields{
+			"url":           string(ctx.Request().URI().Path()),
+			"method":        string(ctx.Request().Header.Method()),
+			"status_code":   ctx.Response().StatusCode(),
+			"response_time": time.Since(startTime).Milliseconds(),
+			"request":       string(requestJson),
+			"response":      string(responseJson),
+		}).Info("incoming request")
 		return nil
 	}
 }

@@ -60,32 +60,22 @@ func (t *TenorHandler) InsertLimit(ctx *fiber.Ctx) error {
 			})
 		}
 
+		var statusCode int
 		switch err.(type) {
 		case *customError.NotFoundError:
-			statusCode := http.StatusNotFound
-			ctx.Status(statusCode)
-			return ctx.JSON(&dto.ApiResponse{
-				StatusCode: statusCode,
-				Status:     helper.CodeToStatus(statusCode),
-				Message:    err.Error(),
-			})
+			statusCode = http.StatusNotFound
 		case *customError.BadRequestError:
-			statusCode := http.StatusBadRequest
-			ctx.Status(statusCode)
-			return ctx.JSON(&dto.ApiResponse{
-				StatusCode: statusCode,
-				Status:     helper.CodeToStatus(statusCode),
-				Message:    err.Error(),
-			})
+			statusCode = http.StatusBadRequest
 		default:
-			statusCode := http.StatusInternalServerError
-			ctx.Status(statusCode)
-			return ctx.JSON(&dto.ApiResponse{
-				StatusCode: statusCode,
-				Status:     helper.CodeToStatus(statusCode),
-				Message:    err.Error(),
-			})
+			statusCode = http.StatusInternalServerError
 		}
+
+		ctx.Status(statusCode)
+		return ctx.JSON(&dto.ApiResponse{
+			StatusCode: statusCode,
+			Status:     helper.CodeToStatus(statusCode),
+			Message:    err.Error(),
+		})
 	}
 
 	// success

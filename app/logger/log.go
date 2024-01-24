@@ -3,6 +3,7 @@ package logger
 import (
 	"github.com/sirupsen/logrus"
 	"os"
+	"xyzApp/app/config"
 )
 
 // function log to console
@@ -16,14 +17,14 @@ func NewLoggerConsole() *logrus.Logger {
 }
 
 // function log to file
-func NewLoggerFile() *logrus.Logger {
+func NewLoggerFile(cfg config.IConfig) *logrus.Logger {
 	log := logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{})
 	log.SetLevel(logrus.DebugLevel)
 	log.SetOutput(os.Stdout)
 
 	// open file
-	file, err := os.OpenFile("./log/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	file, err := os.OpenFile(cfg.GetConfig().Logging.Path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err == nil {
 		log.SetOutput(file)
 	} else {
