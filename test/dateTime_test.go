@@ -8,7 +8,7 @@ import (
 	"time"
 	"xyzApp/app/config"
 	"xyzApp/app/helper"
-	mck "xyzApp/test/mock"
+	mck "xyzApp/test/mock/config"
 )
 
 func TestStringToDateTime(t *testing.T) {
