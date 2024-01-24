@@ -5,6 +5,6 @@ import (
 	"xyzApp/app/handler"
 )
 
-func SetTenorRoutes(r fiber.Router, handler *handler.TenorHandler) {
-	r.Post("/tenor", handler.InsertLimit)
+func SetTenorRoutes(r fiber.Router, middleware fiber.Handler, handler *handler.TenorHandler) {
+	r.Post("/tenor", middleware, handler.InsertLimit)
 }

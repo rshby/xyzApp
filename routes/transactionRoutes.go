@@ -5,6 +5,6 @@ import (
 	"xyzApp/app/handler"
 )
 
-func SetTransactionRoutes(r fiber.Router, handler *handler.TransactionHandler) {
-	r.Post("/buy", handler.Buy)
+func SetTransactionRoutes(r fiber.Router, middleware fiber.Handler, handler *handler.TransactionHandler) {
+	r.Post("/buy", middleware, handler.Buy)
 }

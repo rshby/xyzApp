@@ -63,3 +63,11 @@ CREATE TABLE transactions
     INDEX idx_reff_number (reff_number),
     INDEX idx_nik (nik)
 ) engine = InnoDB;
+
+-- insert konsumer
+INSERT INTO konsumer (nik, full_name, legal_name, tempat_lahir, tanggal_lahir, gaji, foto_ktp, foto_selfie, created_at, updated_at)
+VALUES ('1234567890123456', 'John Doe', 'John Doe', 'Jakarta', '1999-10-10 00:00:00', 12000000.00, 'www.google.com', 'www.google.com', '2024-01-01 00:00:00', '2024-01-01 00:00:00');
+
+-- insert tenor
+INSERT INTO tenor (nik, bulan, start_date, end_date, tenor, created_at, updated_at)
+VALUES ('1234567890123456', 'Januari', '2024-01-01 00:00:00', '2024-01-01 23:59:59', 1000000, '2024-01-01 00:00:00', '2024-01-01 00:00:00');

@@ -6,12 +6,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"net/http"
 	"xyzApp/app/config"
 	"xyzApp/app/handler"
-	"xyzApp/app/helper"
 	"xyzApp/app/middleware"
-	"xyzApp/app/model/dto"
 	"xyzApp/app/repository"
 	"xyzApp/app/service"
 	"xyzApp/routes"
@@ -53,19 +50,9 @@ func NewServerApp(cfg config.IConfig, validate *validator.Validate, db *sql.DB) 
 	v1.Use(logger.New())
 
 	routes.SetKonsumerRoutes(v1, konsumerHandler)
-	routes.SetTenorRoutes(v1, tenorHandler)
-	routes.SetTransactionRoutes(v1, transactionHandler)
+	routes.SetTenorRoutes(v1, authMiddleware, tenorHandler)
+	routes.SetTransactionRoutes(v1, authMiddleware, transactionHandler)
 	routes.SetAccountRoutes(v1, accountHandler)
-
-	v1.Get("/test", authMiddleware, func(ctx *fiber.Ctx) error {
-		statusCode := http.StatusOK
-		ctx.Status(statusCode)
-		return ctx.JSON(&dto.ApiResponse{
-			StatusCode: statusCode,
-			Status:     helper.CodeToStatus(statusCode),
-			Message:    "test middleware auth",
-		})
-	})
 
 	return &ServerApp{
 		Router: app,
