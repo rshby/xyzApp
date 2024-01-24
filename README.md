@@ -29,10 +29,10 @@ Aplikasi ini juga mendukung tracing menggunakan Jaeger. <br>
 Anda dapat membua dashboar jaeger dengan url `http://localhost:16686` <br>
 Dengan menggunakan tracing ini kita akan lebih mudah mengetahui masing-masing proses yang jalan di apliasi ini. <br>
 Harapannya penambahan tracing ini akan mempermudah kita dalam menemukan root cause ketika apliasi ini dirasa memiliki response time yang lama.<br>
-[<img src="https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT" width="300"/>](https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT)
+[<img src="https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT" width="500"/>](https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT)
 
 ## Logging ELK
 Aplikasi ini juga mendukung logging yang ditampilkan dari dahshboard Kibana.<br>
 Anda dapat membuka dashboard Kibana dengan url berikut `http://localhost:5601` <br>
 Dengan menggunakan filebeat-logstash-elasticsearch-kibana harapannya kita akan lebih mudah dalam melihat log untuk setiap request yang masuk ke aplikasi ini<br>
-[<img src="https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT" width="300"/>](https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT)
+[<img src="https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT" width="500"/>](https://drive.google.com/uc?export=view&id=1O46mhOzEEtgjzJYrhU-396Gnb7KHcOlT)
