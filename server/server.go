@@ -41,11 +41,15 @@ func NewServerApp(cfg config.IConfig, validate *validator.Validate, db *sql.DB) 
 	transactionHandler := handler.NewTrasactionHandler(transactionService)
 	accountHandler := handler.NewAccountHandler(accountService)
 
+	// middleware
+	authMiddleware := middleware.AuthMiddleware(cfg.GetConfig())
+	loggerMiddleware := middleware.LoggerMiddleware(cfg)
+
 	app := fiber.New(fiber.Config{
 		Prefork: false,
 	})
 
-	v1 := app.Group("/v1")
+	v1 := app.Group("/v1").Use(loggerMiddleware)
 	v1.Use(logger.New())
 
 	routes.SetKonsumerRoutes(v1, konsumerHandler)
@@ -53,7 +57,6 @@ func NewServerApp(cfg config.IConfig, validate *validator.Validate, db *sql.DB) 
 	routes.SetTransactionRoutes(v1, transactionHandler)
 	routes.SetAccountRoutes(v1, accountHandler)
 
-	authMiddleware := middleware.AuthMiddleware(cfg.GetConfig())
 	v1.Get("/test", authMiddleware, func(ctx *fiber.Ctx) error {
 		statusCode := http.StatusOK
 		ctx.Status(statusCode)

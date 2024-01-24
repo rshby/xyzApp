@@ -40,6 +40,9 @@ func LoadConfig() IConfig {
 		Jwt: &Jwt{
 			SecretKey: cfg.GetString("jwt.secret_key"),
 		},
+		Logging: &Logging{
+			Path: cfg.GetString("logging.path"),
+		},
 	}
 
 	return &Config{AppConfig: configApp}
@@ -54,6 +57,7 @@ type AppConfig struct {
 	Database *Database `json:"database,omitempty"`
 	Jaeger   *Jaeger   `json:"jaeger,omitempty"`
 	Jwt      *Jwt      `json:"jwt,omitempty"`
+	Logging  *Logging  `json:"logging,omitempty"`
 }
 
 type App struct {
@@ -77,4 +81,8 @@ type Jaeger struct {
 
 type Jwt struct {
 	SecretKey string `json:"secret_key,omitempty"`
+}
+
+type Logging struct {
+	Path string `json:"path,omitempty"`
 }
